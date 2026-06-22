@@ -1,6 +1,6 @@
 # AI 投研决策 Multi-Agent Demo
 
-这是一个面向简历/作品集展示的 AI 投研决策系统 MVP。它参考了 FinResearch、FinSight、TradingAgents、FinRobot、Agentic-Analyst 等开源项目的设计思想，但做了更适合个人展示的简化：
+这是一个 AI 投研决策系统演示项目，参考了 FinResearch、FinSight、TradingAgents、FinRobot、Agentic-Analyst 等开源项目的设计思想，并做了轻量化实现：
 
 - 不做自动交易，只做投研决策支持。
 - 不直接依赖高风险社媒爬虫，优先使用公开 RSS、官方公告、新闻源和可替换连接器。
@@ -82,31 +82,6 @@ streamlit run app.py
 
 API Key 只在当前 Streamlit 会话中传给 DeepSeek 接口，不会写入项目文件。未填写 API Key 时，系统仍会使用规则 Agent 跑完整流程；填写后，会额外生成 `DeepSeekSynthesisAgent` 的大模型增强研判。
 
-## Vercel 部署
-
-本项目同时提供 Vercel 版本：
-
-- `public/index.html`：面试官可访问的网页 Demo
-- `api/analyze.py`：Python Serverless API
-- `vercel.json`：Vercel 路由配置
-
-部署方式：
-
-```bash
-vercel
-```
-
-或连接 GitHub 仓库后，在 Vercel 控制台选择该仓库自动部署。Vercel 版页面也支持：
-
-- DeepSeek
-- OpenRouter
-- 自定义 OpenAI-compatible API
-
-注意：Vercel 不适合直接运行 Streamlit，所以本项目保留两套入口：
-
-- 本地演示：`streamlit run app.py`
-- 线上演示：Vercel 静态页面 + `/api/analyze`
-
 命令行也支持 DeepSeek：
 
 ```bash
@@ -120,14 +95,6 @@ set DEEPSEEK_API_KEY=你的key
 python main.py --topic "AI semiconductor supply chain"
 ```
 
-## 适合写进简历的表达
-
-AI 投研决策 Multi-Agent Demo
-
-- 设计多智能体投研工作流，覆盖信息源发现、新闻/事件抓取、情绪与事件抽取、宏观因子分析、行业机会评分、公司筛选、基本面与估值分析、风险审查、多空辩论和研究报告生成。
-- 参考 FinResearch、TradingAgents、FinRobot 等开源金融 Agent 架构，将投研流程拆解为可解释的 Agent 输出，并通过统一状态对象沉淀证据链、评分和投资建议。
-- 当前 MVP 支持公开新闻/RSS 抓取、正则与词典法情绪分析、行业评分、估值框架和 Markdown 报告生成；后续可接入 DeepSeek、SEC EDGAR、FRED、OpenBB、YouTube/X/微信公众号合规数据源。
-
 ## 免责声明
 
-本项目仅用于学习、作品集和投研流程演示，不构成任何投资建议，也不应被用于自动交易或真实资金决策。
+本项目仅用于学习、研究和投研流程演示，不构成任何投资建议，也不应被用于自动交易或真实资金决策。
