@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 from http.server import BaseHTTPRequestHandler
 from pathlib import Path
@@ -25,9 +26,10 @@ def run_state(payload: dict) -> ResearchState:
     for agent in DEFAULT_PIPELINE:
         agent.run(state)
 
-    api_key = (payload.get("api_key") or "").strip()
+    provider = payload.get("provider") or "deepseek"
+    env_key = "OPENROUTER_API_KEY" if provider == "openrouter" else "DEEPSEEK_API_KEY"
+    api_key = (payload.get("api_key") or os.getenv(env_key, "")).strip()
     if api_key:
-        provider = payload.get("provider") or "deepseek"
         extra_headers = {}
         if provider == "openrouter":
             extra_headers = {
