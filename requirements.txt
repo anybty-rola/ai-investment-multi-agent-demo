@@ -1,0 +1,2 @@
+# Vercel serverless API only uses Python standard library.
+# Local Streamlit dependencies are in requirements-streamlit.txt.

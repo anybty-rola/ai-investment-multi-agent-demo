@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI 投研决策 Multi-Agent Demo</title>
+    <style>
+      :root {
+        --bg: #f6f8fb;
+        --card: #ffffff;
+        --text: #172033;
+        --muted: #657085;
+        --blue: #2454d6;
+        --line: #e6eaf2;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      header {
+        padding: 28px 32px;
+        background: linear-gradient(120deg, #111827, #2454d6);
+        color: #fff;
+      }
+      header h1 { margin: 0 0 8px; font-size: 28px; }
+      header p { margin: 0; opacity: .86; }
+      main {
+        display: grid;
+        grid-template-columns: 360px 1fr;
+        gap: 20px;
+        padding: 20px;
+        max-width: 1360px;
+        margin: 0 auto;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 12px 35px rgba(15, 23, 42, .06);
+      }
+      label {
+        display: block;
+        font-weight: 650;
+        font-size: 13px;
+        margin: 14px 0 6px;
+      }
+      input, select, textarea {
+        width: 100%;
+        border: 1px solid #d8deea;
+        border-radius: 10px;
+        padding: 10px 11px;
+        font-size: 14px;
+        outline: none;
+      }
+      textarea { min-height: 80px; }
+      button {
+        width: 100%;
+        border: none;
+        border-radius: 12px;
+        margin-top: 18px;
+        padding: 12px 14px;
+        background: var(--blue);
+        color: #fff;
+        font-weight: 750;
+        cursor: pointer;
+      }
+      button:disabled { opacity: .55; cursor: not-allowed; }
+      .hint { color: var(--muted); font-size: 12px; line-height: 1.55; margin-top: 8px; }
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .metric {
+        background: #f8fafc;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px;
+      }
+      .metric span { color: var(--muted); font-size: 12px; }
+      .metric strong { display: block; margin-top: 6px; font-size: 18px; }
+      pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        background: #0b1020;
+        color: #dbeafe;
+        padding: 18px;
+        border-radius: 14px;
+        overflow: auto;
+        min-height: 520px;
+      }
+      .agents {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin: 14px 0;
+      }
+      .agent {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+        background: #fff;
+      }
+      .agent h4 { margin: 0 0 6px; font-size: 14px; }
+      .agent p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.45; }
+      @media (max-width: 900px) {
+        main { grid-template-columns: 1fr; }
+        .metrics { grid-template-columns: repeat(2, 1fr); }
+        .agents { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>AI 投研决策 Multi-Agent Demo</h1>
+      <p>信息源发现 -> 情绪事件 -> 宏观行业 -> 多因子影响 -> 公司筛选 -> 估值风险 -> 多空辩论 -> 大模型综合研判</p>
+    </header>
+    <main>
+      <section class="card">
+        <h2>研究参数</h2>
+        <label>研究主题</label>
+        <input id="topic" value="AI semiconductor supply chain" />
+
+        <label>区域</label>
+        <select id="region">
+          <option value="global">global</option>
+          <option value="US">US</option>
+          <option value="China">China</option>
+          <option value="HK">HK</option>
+        </select>
+
+        <label>候选公司 / 股票代码</label>
+        <input id="tickers" value="NVDA,AMD,TSM,MU" />
+
+        <h2 style="margin-top:22px;">大模型增强</h2>
+        <label>模型渠道</label>
+        <select id="provider" onchange="switchProvider()">
+          <option value="deepseek">DeepSeek</option>
+          <option value="openrouter">OpenRouter</option>
+          <option value="custom">自定义 OpenAI-compatible</option>
+        </select>
+
+        <label>API Key</label>
+        <input id="apiKey" type="password" placeholder="可不填；不填时只运行规则 Agent" />
+
+        <label>Base URL</label>
+        <input id="baseUrl" value="https://api.deepseek.com/v1" />
+
+        <label>模型</label>
+        <input id="model" value="deepseek-chat" />
+
+        <button id="runBtn" onclick="runAnalysis()">生成投研报告</button>
+        <div class="hint">
+          API Key 只会随本次请求发送给后端，不会保存到仓库。Vercel 演示建议使用临时 Key 或设置服务端环境变量。
+        </div>
+      </section>
+
+      <section>
+        <div class="metrics">
+          <div class="metric"><span>最终决策</span><strong id="decision">-</strong></div>
+          <div class="metric"><span>推荐行业</span><strong id="industry">-</strong></div>
+          <div class="metric"><span>风险可信度</span><strong id="risk">-</strong></div>
+          <div class="metric"><span>LLM 状态</span><strong id="llmStatus">-</strong></div>
+        </div>
+        <div class="card">
+          <h2>Agent 输出</h2>
+          <div id="agents" class="agents"></div>
+          <h2>Markdown 投研报告</h2>
+          <pre id="report">点击左侧按钮生成报告。</pre>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      function switchProvider() {
+        const provider = document.getElementById("provider").value;
+        const baseUrl = document.getElementById("baseUrl");
+        const model = document.getElementById("model");
+        if (provider === "deepseek") {
+          baseUrl.value = "https://api.deepseek.com/v1";
+          model.value = "deepseek-chat";
+        } else if (provider === "openrouter") {
+          baseUrl.value = "https://openrouter.ai/api/v1";
+          model.value = "deepseek/deepseek-chat-v3-0324";
+        } else {
+          baseUrl.value = "https://api.openai.com/v1";
+          model.value = "gpt-4o-mini";
+        }
+      }
+
+      async function runAnalysis() {
+        const btn = document.getElementById("runBtn");
+        btn.disabled = true;
+        btn.textContent = "生成中...";
+        document.getElementById("report").textContent = "Multi-agent pipeline running...";
+        document.getElementById("agents").innerHTML = "";
+
+        const payload = {
+          topic: document.getElementById("topic").value,
+          region: document.getElementById("region").value,
+          tickers: document.getElementById("tickers").value.split(",").map(s => s.trim()).filter(Boolean),
+          provider: document.getElementById("provider").value,
+          api_key: document.getElementById("apiKey").value,
+          base_url: document.getElementById("baseUrl").value,
+          model: document.getElementById("model").value,
+        };
+
+        try {
+          const resp = await fetch("/api/analyze", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await resp.json();
+          if (!resp.ok) throw new Error(data.error || "请求失败");
+          document.getElementById("decision").textContent = data.metrics.decision || "-";
+          document.getElementById("industry").textContent = data.metrics.industry || "-";
+          document.getElementById("risk").textContent = data.metrics.risk_score ?? "-";
+          document.getElementById("llmStatus").textContent = data.metrics.llm_enabled ? "已启用" : "未启用";
+          document.getElementById("report").textContent = data.report;
+          document.getElementById("agents").innerHTML = data.agents.map(a => `
+            <div class="agent">
+              <h4>${a.agent}${a.score !== null ? ` · ${a.score}` : ""}</h4>
+              <p>${a.summary}</p>
+            </div>
+          `).join("");
+        } catch (err) {
+          document.getElementById("report").textContent = "错误：" + err.message;
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "生成投研报告";
+        }
+      }
+    </script>
+  </body>
+</html>
