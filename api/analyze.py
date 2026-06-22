@@ -34,7 +34,7 @@ def run_state(payload: dict) -> ResearchState:
         if provider == "openrouter":
             extra_headers = {
                 "HTTP-Referer": "https://vercel.app",
-                "X-Title": "AI Investment Multi-Agent Demo",
+                "X-Title": "AI Investment Multi-Agent System",
             }
         DeepSeekSynthesisAgent(
             LLMConfig(

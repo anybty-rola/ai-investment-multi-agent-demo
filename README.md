@@ -1,6 +1,6 @@
-# AI 投研决策 Multi-Agent Demo
+# AI 投研决策系统
 
-这是一个 AI 投研决策系统演示项目，参考了 FinResearch、FinSight、TradingAgents、FinRobot、Agentic-Analyst 等开源项目的设计思想，并做了轻量化实现：
+这是一个 AI 投研决策系统原型，参考了 FinResearch、FinSight、TradingAgents、FinRobot、Agentic-Analyst 等开源项目的设计思想，并做了轻量化实现：
 
 - 不做自动交易，只做投研决策支持。
 - 不直接依赖高风险社媒爬虫，优先使用公开 RSS、官方公告、新闻源和可替换连接器。
@@ -15,7 +15,7 @@
 
 2. `NewsAndEventCollectorAgent`
    - 使用公开 RSS / Google News RSS 抓取新闻标题和摘要。
-   - 当前 demo 不直接抓微信、小红书、X、Facebook、抖音等平台，后续可通过合规 API 或人工导入文件接入。
+   - 当前版本不直接抓微信、小红书、X、Facebook、抖音等平台，后续可通过合规 API 或人工导入文件接入。
 
 3. `SentimentAndEventAgent`
    - 使用正则、关键词词典和事件标签识别正向/负向投资情绪。
@@ -23,7 +23,7 @@
 
 4. `MacroAgent`
    - 汇总政策、利率、通胀、地缘、天气、能源、供应链等宏观因子。
-   - 当前 demo 使用可解释的规则评分，后续可接 FRED、World Bank、央行公告、天气 API。
+   - 当前版本使用可解释的规则评分，后续可接 FRED、World Bank、央行公告、天气 API。
 
 5. `IndustryThesisAgent`
    - 根据情绪、宏观、政策、需求、技术周期判断潜力行业。
@@ -34,7 +34,7 @@
 
 7. `CompanyScreeningAgent`
    - 根据行业主题生成候选公司池。
-   - 当前 demo 内置部分示例公司，后续可接 Wind、同花顺 iFinD、Yahoo Finance、SEC、OpenBB。
+   - 当前版本内置部分示例公司，后续可接 Wind、同花顺 iFinD、Yahoo Finance、SEC、OpenBB。
 
 8. `FundamentalValuationAgent`
    - 做基本面、产业链位置、估值方法框架。

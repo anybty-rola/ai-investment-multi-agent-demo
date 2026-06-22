@@ -8,9 +8,9 @@ from src.llm import LLMConfig
 from src.orchestrator import run_research
 
 
-st.set_page_config(page_title="AI 投研决策 Multi-Agent Demo", layout="wide")
+st.set_page_config(page_title="AI 投研决策系统", layout="wide")
 
-st.title("AI 投研决策 Multi-Agent Demo")
+st.title("AI 投研决策系统")
 st.caption("信息源发现 -> 情绪事件 -> 宏观行业 -> 多因子影响 -> 公司筛选 -> 估值风险 -> 多空辩论 -> 投研报告")
 
 with st.sidebar:
@@ -48,7 +48,7 @@ if run:
         if provider == "OpenRouter":
             extra_headers = {
                 "HTTP-Referer": "http://localhost:8501",
-                "X-Title": "AI Investment Multi-Agent Demo",
+                "X-Title": "AI Investment Multi-Agent System",
             }
         llm_config = LLMConfig(
             api_key=api_key.strip(),
@@ -93,4 +93,4 @@ if run:
     st.subheader("Markdown 投研报告")
     st.markdown(report)
 else:
-    st.info("输入主题后点击生成。第一版 demo 使用公开 RSS 和规则评分，适合作品集演示；真实投研需接入合规 API、财务数据库和回测。")
+    st.info("输入主题后点击生成。当前版本使用公开 RSS、规则评分与可选大模型综合研判；生产级投研需继续接入合规 API、财务数据库、估值模型和回测框架。")

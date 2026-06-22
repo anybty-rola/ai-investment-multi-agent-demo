@@ -138,15 +138,15 @@ class NewsAndEventCollectorAgent:
         return [
             SourceItem(
                 title=f"{state.topic}: AI infrastructure demand remains a key market theme",
-                url="demo://fallback/ai-infrastructure",
-                source="Demo fallback",
+                url="local://fallback/ai-infrastructure",
+                source="Local fallback",
                 summary="Fallback item used when live RSS is unavailable.",
                 credibility=0.45,
             ),
             SourceItem(
                 title=f"Policy and supply chain risks remain important for {state.topic}",
-                url="demo://fallback/policy-risk",
-                source="Demo fallback",
+                url="local://fallback/policy-risk",
+                source="Local fallback",
                 summary="Fallback item used when live RSS is unavailable.",
                 credibility=0.45,
             ),
@@ -461,7 +461,7 @@ class DeepSeekSynthesisAgent:
 3. 三条最关键的看空/风险依据。
 4. 对候选公司的优先级排序和理由。
 5. 还需要补充验证的真实数据清单。
-6. 适合放进作品集的项目亮点总结。
+6. 系统需要进一步验证或接入的数据、模型和风控模块。
 
 多智能体输出：
 {chr(10).join(agent_lines)}

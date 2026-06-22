@@ -9,7 +9,7 @@ from src.orchestrator import run_research
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="AI 投研决策 Multi-Agent Demo")
+    parser = argparse.ArgumentParser(description="AI 投研决策系统")
     parser.add_argument("--topic", default="AI semiconductor supply chain", help="研究主题，例如 AI semiconductor supply chain")
     parser.add_argument("--region", default="global", help="区域，例如 global / China / US / HK")
     parser.add_argument("--tickers", default="", help="逗号分隔的股票代码，例如 NVDA,AMD,TSM,MU")

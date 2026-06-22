@@ -42,7 +42,7 @@ def clean_html(text: str) -> str:
 def fetch_google_news_rss(query: str, region: str = "global", limit: int = 12) -> list[SourceItem]:
     """Fetch Google News RSS results without requiring an API key.
 
-    This is intentionally conservative for a demo. For production, replace it with
+    This connector is intentionally conservative. For production, replace it with
     paid/compliant APIs such as Serper, GDELT, AlphaSense, Factiva, or official feeds.
     """
 

@@ -1,1 +1,1 @@
-"""AI investment multi-agent demo package."""
+"""AI investment multi-agent system package."""
